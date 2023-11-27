@@ -5,10 +5,12 @@ ARG SCANSERVJS_VERSION=v3.0.3
 FROM docker.io/sbs20/scanservjs:$SCANSERVJS_VERSION
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      ocrmypdf
+      ocrmypdf \
+      pngquant \
+      unpaper
 
 jbig2enc:
-  RUN apt-get update && apt-get install -y --no-install-recommends \
+  RUN apt-get install -y --no-install-recommends \
         automake \
         build-essential \
         curl \
@@ -27,7 +29,7 @@ jbig2enc:
   SAVE ARTIFACT /build
 
 ocrmypdf:
-  RUN apt-get update && apt-get install -y --no-install-recommends \
+  RUN apt-get install -y --no-install-recommends \
         python3-venv
 
   ARG OCRMYPDF_VERSION=15.4.3
@@ -41,6 +43,6 @@ docker:
   COPY +ocrmypdf/venv /venv
   COPY +jbig2enc/build /usr/local
 
-  ENV PATH "/venv/bin:$PATH"
+  ENV PATH="/venv/bin:$PATH"
 
   SAVE IMAGE --push ghcr.io/kpine/scanservjs:latest
