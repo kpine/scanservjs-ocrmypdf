@@ -30,8 +30,10 @@ ocrmypdf:
   RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-venv
 
+  ARG OCRMYPDF_VERSION=15.4.3
+
   RUN python3 -m venv /venv \
-   && /venv/bin/pip install ocrmypdf=='15.4.*'
+   && /venv/bin/pip install ocrmypdf==$OCRMYPDF_VERSION
 
   SAVE ARTIFACT /venv
 
