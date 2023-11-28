@@ -39,10 +39,34 @@ ocrmypdf:
 
   SAVE ARTIFACT /venv
 
-docker:
+image:
   COPY +ocrmypdf/venv /venv
   COPY +jbig2enc/build /usr/local
 
   ENV PATH="/venv/bin:$PATH"
 
+  ARG EARTHLY_GIT_SHORT_HASH
+  ARG BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+  LABEL org.opencontainers.image.created=$BUILD_DATE
+  LABEL org.opencontainers.image.description="customized scanservjs"
+  LABEL org.opencontainers.image.revision=$EARTHLY_GIT_SHORT_HASH
+  LABEL org.opencontainers.image.source="https://github.com/kpine/scanservjs-ocrmypdf"
+  LABEL org.opencontainers.image.title="scanservjs"
+  LABEL org.opencontainers.image.version=$SCANSERVJS_VERSION
+
+build:
+  FROM +image
+
+  ARG EARTHLY_GIT_SHORT_HASH
+
+  SAVE IMAGE --push ghcr.io/kpine/scanservjs:$EARTHLY_GIT_SHORT_HASH
+
+release:
+  FROM +image
+
+  ARG EARTHLY_GIT_SHORT_HASH
+  ARG EARTHLY_TARGET_TAG_DOCKER
+
+  SAVE IMAGE --push ghcr.io/kpine/scanservjs:$EARTHLY_TARGET_TAG_DOCKER
   SAVE IMAGE --push ghcr.io/kpine/scanservjs:latest
