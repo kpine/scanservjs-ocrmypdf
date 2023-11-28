@@ -38,4 +38,4 @@ jobs:
           git checkout -b "$branch" || true
 
       - name: Build and Push Images
-        run: earthly --ci +build
+        run: earthly --ci --push +build
